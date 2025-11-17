@@ -3,20 +3,12 @@
 <head>
 <meta charset="UTF-8">
 <title>兒少政策互動選擇</title>
-<link rel="stylesheet" href="style.css">
 <style>
 body {
     background-color: black;
     color: #00FF00;
     font-family: monospace;
     padding: 20px;
-}
-.policy {
-    margin: 10px 0;
-    cursor: pointer;
-}
-.policy:hover {
-    color: #00FFFF;
 }
 .title {
     font-size: 1.5em;
@@ -27,6 +19,19 @@ body {
     margin-top: 20px;
     white-space: pre;
 }
+select, button {
+    font-family: monospace;
+    font-size: 1em;
+    background-color: black;
+    color: #00FF00;
+    border: 1px solid #00FF00;
+    padding: 5px 10px;
+    margin-top: 10px;
+}
+button:hover {
+    color: #00FFFF;
+    border-color: #00FFFF;
+}
 .ansi-green { color: #00FF00; }
 .ansi-cyan { color: #00FFFF; }
 .ansi-red { color: #FF5555; }
@@ -34,7 +39,13 @@ body {
 </head>
 <body>
 <div class="title">💻 兒少政策互動模擬 - Select a Policy / 選擇政策</div>
-<div id="policyList"></div>
+
+<select id="policySelect">
+    <option value="">-- 請選擇政策 --</option>
+</select>
+<br>
+<button id="executeBtn">執行政策 / Execute Policy</button>
+
 <div id="terminal"></div>
 
 <script>
@@ -54,8 +65,27 @@ const policies = [
     {id:12, name:"全校學生會議制度化", log:"system executes: student_council_meeting protocol...", category:"participate"}
 ];
 
-const policyList = document.getElementById("policyList");
-const terminal = document.getElementById("terminal");
+// 依類別分組
+const categories = {
+    env: "永續環境 / Sustainability",
+    digital: "數位安全與健康使用 / Digital Safety & Health",
+    participate: "兒少表意參與 / Child Participation"
+};
+
+const select = document.getElementById("policySelect");
+
+// 建立 optgroup
+for (const cat in categories){
+    const group = document.createElement("optgroup");
+    group.label = categories[cat];
+    policies.filter(p=>p.category===cat).forEach(p=>{
+        const option = document.createElement("option");
+        option.value = p.id;
+        option.textContent = `${p.id}. ${p.name}`;
+        group.appendChild(option);
+    });
+    select.appendChild(group);
+}
 
 // 打字機效果
 function typewriter(element, text, delay = 30, callback){
@@ -65,8 +95,8 @@ function typewriter(element, text, delay = 30, callback){
             element.innerHTML += text.charAt(i);
             i++;
             setTimeout(write, delay);
-        } else {
-            if(callback) callback();
+        } else if(callback){
+            callback();
         }
     }
     write();
@@ -84,34 +114,36 @@ function showLoading(callback){
             terminal.innerHTML += stages[i];
             i++;
             setTimeout(next, 300);
-        } else {
-            if(callback) callback();
+        } else if(callback){
+            callback();
         }
     }
     next();
 }
 
-// 建立政策列表
-policies.forEach(p=>{
-    const div = document.createElement("div");
-    div.className = "policy";
-    div.innerHTML = `#${p.id} ${p.name} <br><span style="color:#AAAAAA;">${p.log}</span>`;
-    div.onclick = ()=>{
-        policyList.style.display = "none"; // 隱藏列表
-        typewriter(terminal, "> initializing policy execution: " + p.name + "\n", 40, ()=>{
-            showLoading(()=>{
-                typewriter(terminal, "\n> execution complete. redirecting...\n", 40, ()=>{
-                    // 決定模板頁
-                    let targetPage = "participate.html";
-                    if(p.category === "env") targetPage = "env.html";
-                    if(p.category === "digital") targetPage = "digital.html";
-                    window.location.href = `${targetPage}?id=${p.id}`;
-                });
+const btn = document.getElementById("executeBtn");
+const terminal = document.getElementById("terminal");
+
+btn.onclick = ()=>{
+    const selectedId = parseInt(select.value);
+    if(!selectedId) return alert("請先選擇一條政策 / Please select a policy");
+    const policy = policies.find(p=>p.id===selectedId);
+    select.style.display = "none";
+    btn.style.display = "none";
+
+    typewriter(terminal, "> initializing policy execution: " + policy.name + "\n", 40, ()=>{
+        showLoading(()=>{
+            typewriter(terminal, "\n> execution complete. redirecting...\n", 40, ()=>{
+                // 決定模板頁
+                let targetPage = "participate.html";
+                if(policy.category === "env") targetPage = "env.html";
+                if(policy.category === "digital") targetPage = "digital.html";
+                window.location.href = `${targetPage}?id=${policy.id}`;
             });
         });
-    };
-    policyList.appendChild(div);
-});
+    });
+};
 </script>
 </body>
 </html>
+
