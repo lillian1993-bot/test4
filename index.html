@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<title>兒少政策互動選擇</title>
+<link rel="stylesheet" href="style.css">
+<style>
+body {
+    background-color: black;
+    color: #00FF00;
+    font-family: monospace;
+    padding: 20px;
+}
+.policy {
+    margin: 10px 0;
+    cursor: pointer;
+}
+.policy:hover {
+    color: #00FFFF;
+}
+.title {
+    font-size: 1.5em;
+    margin-bottom: 20px;
+    color: #FF5555;
+}
+#terminal {
+    margin-top: 20px;
+    white-space: pre;
+}
+.ansi-green { color: #00FF00; }
+.ansi-cyan { color: #00FFFF; }
+.ansi-red { color: #FF5555; }
+</style>
+</head>
+<body>
+<div class="title">💻 兒少政策互動模擬 - Select a Policy / 選擇政策</div>
+<div id="policyList"></div>
+<div id="terminal"></div>
+
+<script>
+// 政策資料
+const policies = [
+    {id:1, name:"全民氣候行動日", log:"system executes: nationwide_climate_action protocol...", category:"env"},
+    {id:2, name:"菸蒂不落地", log:"system executes: cigarette_litter_reduction module...", category:"env"},
+    {id:3, name:"綠色通勤更容易", log:"sustainability.module: computing urban mobility impact...", category:"env"},
+    {id:4, name:"社區公園 × 樹更多", log:"system deploys: urban_park_expansion...", category:"env"},
+    {id:5, name:"減塑日行動！", log:"system executes: plastic_reduction_day...", category:"env"},
+    {id:6, name:"菸品減害設計", log:"system enforces: biodegradable_filter regulation...", category:"env"},
+    {id:7, name:"智慧3C設計", log:"system executes: smart_3C_device regulation...", category:"digital"},
+    {id:8, name:"健康使用3C教育", log:"system deploys: 3C_health_education...", category:"digital"},
+    {id:9, name:"校園無3C日", log:"system executes: no_3C_day...", category:"digital"},
+    {id:10, name:"數位性剝削零容忍", log:"system enforces: zero_tolerance_policy...", category:"digital"},
+    {id:11, name:"媒體共同守護", log:"system executes: media_awareness_campaign...", category:"digital"},
+    {id:12, name:"全校學生會議制度化", log:"system executes: student_council_meeting protocol...", category:"participate"}
+];
+
+const policyList = document.getElementById("policyList");
+const terminal = document.getElementById("terminal");
+
+// 打字機效果
+function typewriter(element, text, delay = 30, callback){
+    let i = 0;
+    function write(){
+        if(i < text.length){
+            element.innerHTML += text.charAt(i);
+            i++;
+            setTimeout(write, delay);
+        } else {
+            if(callback) callback();
+        }
+    }
+    write();
+}
+
+// loading bar
+function showLoading(callback){
+    const stages = ["[█████▒▒▒▒▒▒▒] 35% 更新中...\n",
+                    "[█████████▒▒▒] 50% 更新中...\n",
+                    "[████████████▒] 75% 更新中...\n",
+                    "[█████████████] 100% 更新完成!\n"];
+    let i = 0;
+    function next(){
+        if(i < stages.length){
+            terminal.innerHTML += stages[i];
+            i++;
+            setTimeout(next, 300);
+        } else {
+            if(callback) callback();
+        }
+    }
+    next();
+}
+
+// 建立政策列表
+policies.forEach(p=>{
+    const div = document.createElement("div");
+    div.className = "policy";
+    div.innerHTML = `#${p.id} ${p.name} <br><span style="color:#AAAAAA;">${p.log}</span>`;
+    div.onclick = ()=>{
+        policyList.style.display = "none"; // 隱藏列表
+        typewriter(terminal, "> initializing policy execution: " + p.name + "\n", 40, ()=>{
+            showLoading(()=>{
+                typewriter(terminal, "\n> execution complete. redirecting...\n", 40, ()=>{
+                    // 決定模板頁
+                    let targetPage = "participate.html";
+                    if(p.category === "env") targetPage = "env.html";
+                    if(p.category === "digital") targetPage = "digital.html";
+                    window.location.href = `${targetPage}?id=${p.id}`;
+                });
+            });
+        });
+    };
+    policyList.appendChild(div);
+});
+</script>
+</body>
+</html>

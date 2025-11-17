@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<title>數位安全與健康使用</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="terminal" id="terminal"></div>
+<script src="typewriter.js"></script>
+<script>
+const terminal = document.getElementById("terminal");
+
+const policies = {
+    7:{
+        name:"智慧3C設計",
+        category:"數位安全與健康使用",
+        desc_zh:"政府應規範3C產品，在長時間使用後提醒休息，保護眼睛與健康。",
+        desc_en:"system executes: smart_3C_device regulation...\nresult: user_break_reminder = active",
+        vision:"3C產品使用更健康，孩子眼睛受保護。",
+        ascii:`
+     _______
+    |       |
+    |  3C   |
+    |_______|
+      ||||
+      ||||
+      ||||
+        `
+    },
+    8:{
+        name:"健康使用3C教育",
+        category:"數位安全與健康使用",
+        desc_zh:"定期進行「健康使用3C」宣導，提供教材與活動，幫助家長與兒少理解過度使用的危害。",
+        desc_en:"system deploys: 3C_health_education...\nresult: parent_child_awareness +20%",
+        vision:"家長與孩子理解3C危害，健康使用提升。",
+        ascii:`
+     _______
+    | EDU   |
+    | 3C    |
+    |_______|
+      ||||
+      ||||
+      ||||
+        `
+    },
+    9:{
+        name:"校園無3C日",
+        category:"數位安全與健康使用",
+        desc_zh:"每學期至少舉辦一次「校園無3C日」，鼓勵學生多參與戶外活動、降低近視率。",
+        desc_en:"system executes: no_3C_day...\nresult: outdoor_activity += 15%",
+        vision:"孩子更多戶外活動，視力健康改善。",
+        ascii:`
+     _____
+    |     |
+    | NO 3C|
+    |_____|
+      ||||
+      ||||
+      ||||
+        `
+    },
+    10:{
+        name:"數位性剝削零容忍",
+        category:"數位安全與健康使用",
+        desc_zh:"完善防治兒少數位性剝削的法律，並建立兒少專屬的安全通報與支持系統。",
+        desc_en:"system enforces: zero_tolerance_policy...\nresult: digital_exploitation_report +safe",
+        vision:"兒少數位安全受到保障，侵害事件降低。",
+        ascii:`
+     _______
+    |SAFE  |
+    |ALERT |
+    |_______|
+      ||||
+      ||||
+      ||||
+        `
+    },
+    11:{
+        name:"媒體共同守護",
+        category:"數位安全與健康使用",
+        desc_zh:"政府與媒體應加強宣導數位性剝削的危害，提升社會大眾防範意識。",
+        desc_en:"system executes: media_awareness_campaign...\nresult: public_awareness +30%",
+        vision:"社會大眾對兒少數位安全更重視。",
+        ascii:`
+     _______
+    | MEDIA|
+    |SAFE  |
+    |______|
+      ||||
+      ||||
+      ||||
+        `
+    }
+};
+
+// 讀取 URL ?id=7
+const params = new URLSearchParams(window.location.search);
+let id = params.get('id') || 7;
+id = parseInt(id);
+const policy = policies[id] || policies[7];
+
+function runTerminal(){
+    typewriter(terminal, "> loading suggestion: #" + id + " " + policy.name + "\\n", 30, ()=>{
+        showLoading(terminal, ()=>{
+            typewriter(terminal, "> impact_analysis: " + policy.desc_zh + "\\n", 30, ()=>{
+                typewriter(terminal, "> " + policy.desc_en + "\\n\\n", 30, ()=>{
+                    typewriter(terminal, policy.ascii + "\\n", 10, ()=>{
+                        typewriter(terminal, "> deploy_policy('" + policy.name + "') ........ <span class=\"ansi-green\">ok</span>\\n",30);
+                    });
+                });
+            });
+        });
+    });
+}
+
+runTerminal();
+</script>
+</body>
+</html>

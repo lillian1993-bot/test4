@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<title>兒少表意參與</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="terminal" id="terminal"></div>
+<script src="typewriter.js"></script>
+<script>
+const terminal = document.getElementById("terminal");
+
+const policies = {
+    12:{
+        name:"全校學生會議制度化",
+        category:"兒少表意參與",
+        desc_zh:"透過每學年至少一次全校學生會議，孩子可以表達對校園生活與政策的意見。",
+        desc_en:"system executes: school-wide_student_meeting protocol...",
+        vision:"孩子的意見成功影響政策，校園生活更貼近兒少需求。",
+        ascii:`
+           /\\
+          /  \\
+         /    \\
+--------|      )   )))
+         \\    /
+          \\  /
+           \\/
+
+              O
+             /|\\
+             / \\
+      CHILD + SPEAKER OUTPUT
+        `
+    }
+};
+
+// 讀取 URL ?id=12
+const params = new URLSearchParams(window.location.search);
+const id = params.get('id') || 12; // 預設 12
+const policy = policies[id];
+
+function runTerminal(){
+    typewriter(terminal, "> loading suggestion: #" + id + " " + policy.name + "\\n", 30, ()=>{
+        showLoading(terminal, ()=>{
+            typewriter(terminal, "> impact_analysis: " + policy.desc_zh + "\\n", 30, ()=>{
+                typewriter(terminal, "> " + policy.desc_en + "\\n\\n", 30, ()=>{
+                    typewriter(terminal, policy.ascii + "\\n", 10, ()=>{
+                        typewriter(terminal, "> deploy_policy('" + policy.name + "') ........ <span class=\"ansi-green\">ok</span>\\n",30);
+                    });
+                });
+            });
+        });
+    });
+}
+
+runTerminal();
+</script>
+</body>
+</html>
